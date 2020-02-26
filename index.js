@@ -5,6 +5,10 @@ const express = require('express')
 const app = express()
 const { xml2js } = require('xml-js')
 
+app.all('/', (req, res) => {
+  res.send('It (doens\'t) works!')
+})
+
 app.all('/youtube_callback', (req, res) => {
   const { feed: { entry } } = xml2js(req.body, { compact: true })
   const video_id = entry['yt:videoId']
