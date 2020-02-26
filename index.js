@@ -17,4 +17,4 @@ app.all('/youtube_callback', (req, res) => {
   res.status(200).send(JSON.stringify({status: 'ok'}))
 })
 
-app.listen(8080)
+app.listen(env.PORT)
