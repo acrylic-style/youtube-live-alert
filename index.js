@@ -8,6 +8,7 @@ const cache = {}
 
 const send = (body, url) => {
   let { feed: { entry } } = xml2js(body, { compact: true })
+  if (entry == null) return
   if (entry.constructor.name === 'Array') entry = entry[0]
   const video_id = entry['yt:videoId']
   const msg = new webhook.MessageBuilder()
@@ -21,14 +22,25 @@ const send = (body, url) => {
   Hook.send(msg)
 }
 
+const entries = entry => {
+  if (entry == null) return 0
+  if (entry.constructor.name === 'Array') return entry.length
+  return 1
+}
+
 const check = async () => {
   Object.keys(mapping).forEach(async k => {
     console.log('Checking for: ' + k)
     const text = await fetch(`https://www.youtube.com/feeds/videos.xml?channel_id=${k}`).then(res => res.text())
-    if (cache[k] === text) return
-    console.log('Changes found: ' + k)
-    cache[k] = text
-    if ((Date.now()-start) >= 1000*31) send(text, mapping[k])
+    const { feed: { entry } } = xml2js(text, { compact: true })
+    if (cache[k] < entries(entry)) {
+      console.log('Changes found: ' + k)
+      if ((Date.now()-start) >= 1000*31) send(text, mapping[k])
+    }
+    if (cache[k] !== entries(entry)) {
+      console.log(`Entries change detected (Cache: ${cache[k]}) (Actual: ${entries(entry)})`)
+      cache[k] = entries(entry)
+    }
   })
 }
 
