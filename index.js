@@ -23,8 +23,10 @@ const send = (body, url) => {
 
 const check = async () => {
   Object.keys(mapping).forEach(async k => {
+    console.log('Checking for: ' + k)
     const text = await fetch(`https://www.youtube.com/feeds/videos.xml?channel_id=${k}`).then(res => res.text())
     if (cache[k] === text) return
+    console.log('Changes found: ' + k)
     cache[k] = text
     if ((Date.now()-start) >= 1000*31) send(text, mapping[k])
   })
