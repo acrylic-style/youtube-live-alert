@@ -44,6 +44,6 @@ const check = async () => {
   })
 }
 
-setInterval(check, 1000*30) // check every 30 seconds
+setInterval(check, 1000*60) // check every 1 minute
 
 check()
