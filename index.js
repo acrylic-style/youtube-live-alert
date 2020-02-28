@@ -39,11 +39,12 @@ const check = async () => {
     }
     if (cache[k] !== entries(entry)) {
       console.log(`Entries change detected (Cache: ${cache[k]}) (Actual: ${entries(entry)})`)
+      console.log(text)
       cache[k] = entries(entry)
     }
   })
 }
 
-setInterval(check, 1000*60) // check every 1 minute
+setInterval(check, 1000*30) // check every 30 seconds
 
 check()
